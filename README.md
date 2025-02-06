@@ -17,7 +17,7 @@ What will be installed:
 
 ## Setup the environment
 
-- install tpaexec (tested with the version 23.25.0)
+- install tpaexec (tested with the version 23.35.0)
 - install aws cli
 - install git
 - install curl
