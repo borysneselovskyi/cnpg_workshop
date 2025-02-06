@@ -78,3 +78,4 @@ Connect to the vm:
 
 ## Run the demo
 Follow the steps from the pdf file below:
+[CNPG_ Workshop_Hands-on.pdf](cnpg_workshop/CNPG_ Workshop_Hands-on.pdf)
