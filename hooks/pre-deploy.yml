@@ -1,0 +1,4 @@
+- name: Create group docker
+  group:
+    name: docker
+    state: present

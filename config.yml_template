@@ -1,0 +1,90 @@
+---
+architecture: M1
+cluster_name: training
+cluster_tags:
+  Owner: training (Borys Neselovskyi)
+
+keyring_backend: legacy
+vault_name: df7de378-da1f-49f1-8e5a-cfb1702f2a35
+
+cluster_rules:
+- cidr_ip: #IP#/32
+  from_port: 22
+  proto: tcp
+  to_port: 22
+- cidr_ip: #IP#/32
+  from_port: 9001
+  proto: tcp
+  to_port: 9001
+- cidr_ip: #IP#/32
+  from_port: 9090
+  proto: tcp
+  to_port: 9090
+- cidr_ip: #IP#/32
+  from_port: 3000
+  proto: tcp
+  to_port: 3000
+- cidr_ip: 10.33.249.128/16
+  from_port: 0
+  proto: tcp
+  to_port: 65535
+- cidr_ip: 10.33.82.224/16
+  from_port: 0
+  proto: tcp
+  to_port: 65535
+  # Allow connection to shellinabox
+- cidr_ip: 0.0.0.0/0
+  from_port: 443
+  proto: tcp
+  to_port: 443
+  # Allow connection to http servers
+- cidr_ip: 0.0.0.0/0
+  from_port: 8000
+  proto: tcp
+  to_port: 8030
+
+ec2_ami:
+  Name: debian-11-amd64-20240104-1616
+  Owner: '136693071363'
+ec2_instance_reachability: public
+ec2_vpc:
+  eu-central-1:
+    Name: trainingvpc
+    cidr: 10.33.0.0/16
+
+cluster_vars:
+  enable_pg_backup_api: false
+  failover_manager: none
+  preferred_python_version: python3
+  use_volatile_subscriptions: true
+  packages:
+    common:
+      - jq
+      - patch
+      - git
+      - docker.io
+      - jq
+      - shellinabox
+
+locations:
+- Name: training
+  az: eu-central-1a
+  region: eu-central-1
+  subnet: 10.33.249.128/28
+
+instance_defaults:
+  default_volumes:
+  - device_name: root
+    encrypted: true
+    volume_size: 16
+    volume_type: gp2
+  platform: aws
+  type: t3.xlarge
+  vars:
+    ansible_user: admin
+
+instances:
+- Name: vm01
+  location: training
+  node: 1
+  role: []

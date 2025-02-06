@@ -1,0 +1,140 @@
+######################################################################
+##  Make sure TPAexec is ready to be used
+######################################################################
+
+- set_fact:
+    tpa_path: "/opt/EDB/TPA"
+
+- name: Add {{ ansible_user }} to docker group
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+- name: Ensure TPA path exists
+  file:
+    path: "{{ tpa_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+  become: yes
+  become_user: root
+
+- name: Test if TPA git repository has been cloned already
+  stat:
+    path: "{{ tpa_path }}/.git"
+  register: tpa_git
+  become: yes
+  become_user: "{{ ansible_user }}"
+  
+- name: Clone TPA git repo if needed
+  shell: "git clone https://github.com/enterprisedb/tpa.git {{ tpa_path }}"
+  become: yes
+  become_user: "{{ ansible_user }}"
+  when: tpa_git.stat.exists == False
+
+- name: Ensure tpaexec is in PATH
+  lineinfile:
+    path: "~{{ ansible_user }}/.profile"
+    line: "PATH={{ tpa_path }}/bin:$PATH"
+  become: yes
+  become_user: "{{ ansible_user }}"
+
+- name: Detect whether tpaexec setup is needed
+  shell: "{{ tpa_path }}/bin/tpaexec info | grep ANSIBLE=none"
+  register: no_ansible
+  ignore_errors: yes
+  become: yes
+  become_user: "{{ ansible_user }}"
+
+  # The following has only been tested on Ubuntu 20.04
+- name: Run tpaexec setup if needed
+  shell: "PYTHON=/usr/bin/python3.9 {{ tpa_path }}/bin/tpaexec setup"
+  become: yes
+  become_user: "{{ ansible_user }}"
+  when: no_ansible.rc == 0
+
+######################################################################
+## Install TPA for workshop user
+######################################################################
+
+- set_fact:
+    workshop_user: "workshop"
+
+- name: Test if TPA git repository has been cloned already
+  stat:
+    path: "~/tpa/.git"
+  register: tpa_git
+  become: yes
+  become_user: "{{ workshop_user }}"
+  
+- name: Clone TPA git repo if needed
+  shell: "git clone https://github.com/enterprisedb/tpa.git /home/{{ workshop_user }}/tpa"
+  become: yes
+  become_user: "{{ workshop_user }}"
+  when: tpa_git.stat.exists == False
+
+- name: Ensure tpaexec is in PATH
+  lineinfile:
+    path: "~{{ workshop_user }}/.profile"
+    line: "PATH=/home/{{ workshop_user }}/tpa/bin:$PATH"
+  become: yes
+  become_user: "{{ workshop_user }}"
+
+- name: Detect whether tpaexec setup is needed
+  shell: "/home/{{ workshop_user }}/tpa/bin/tpaexec info | grep ANSIBLE=none"
+  register: no_ansible
+  ignore_errors: yes
+  become: yes
+  become_user: "{{ ansible_user }}"
+
+  # The following has only been tested on Ubuntu 20.04
+- name: Run tpaexec setup if needed
+  shell: "PYTHON=/usr/bin/python3.9 /home/{{ workshop_user }}/tpa/bin/tpaexec setup"
+  become: yes
+  become_user: "{{ workshop_user }}"
+  when: no_ansible.rc == 0
+
+######################################################################
+## Reconfigure ShellInABox to listen to https port 443
+######################################################################
+
+- name: Reconfigure ShellInABox to list at https port 443
+  shell: >
+    sudo sed -i "s/SHELLINABOX_PORT=4200/SHELLINABOX_PORT=443/" /etc/default/shellinabox
+  become: yes
+
+- name: Restart the ShellInABox daemon
+  shell: >
+    sudo invoke-rc.d shellinabox restart
+  become: yes
+
+
+######################################################################
+##  This is needed for Docker to work
+######################################################################
+
+- name: Detect whether CGroups settings are correct
+  shell: >
+    grep systemd.unified_cgroup_hierarchy=false
+    /proc/cmdline
+  register: o
+  ignore_errors: yes
+  become: yes
+
+- name: Create CGroups kernel configuration
+  lineinfile:
+    path: /etc/default/grub.d/cgroup.cfg
+    line: "GRUB_CMDLINE_LINUX=systemd.unified_cgroup_hierarchy=false"
+    create: yes
+  become: yes
+  when: o.rc == 1
+
+- shell: update-grub
+  become: yes
+  when: o.rc == 1
+
+- name: Reboot the instance if needed
+  reboot:
+  when: o.rc == 1

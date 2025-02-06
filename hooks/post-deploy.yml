@@ -1,0 +1,90 @@
+######################################################################
+## Reconfigure ShellInABox to listen to https port 443
+######################################################################
+
+- name: Reconfigure ShellInABox to list at https port 443
+  shell: >
+    sudo sed -i "s/SHELLINABOX_PORT=4200/SHELLINABOX_PORT=443/" /etc/default/shellinabox
+  become: yes
+
+- name: Restart the ShellInABox daemon
+  shell: >
+    sudo invoke-rc.d shellinabox restart
+  become: yes
+
+
+######################################################################
+##  This is needed for Docker to work
+######################################################################
+
+- name: Detect whether CGroups settings are correct
+  shell: >
+    grep systemd.unified_cgroup_hierarchy=false
+    /proc/cmdline
+  register: o
+  ignore_errors: yes
+  become: yes
+
+- name: Create CGroups kernel configuration
+  lineinfile:
+    path: /etc/default/grub.d/cgroup.cfg
+    line: "GRUB_CMDLINE_LINUX=systemd.unified_cgroup_hierarchy=false"
+    create: yes
+  become: yes
+  when: o.rc == 1
+
+- shell: update-grub
+  become: yes
+  when: o.rc == 1
+
+- name: Reboot the instance if needed
+  reboot:
+  when: o.rc == 1
+
+######################################################################
+## Installation k3d
+######################################################################
+
+- name: Installation k3d
+  shell: >
+    curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+  
+######################################################################
+## Installation kubectl
+######################################################################
+
+- name: Installation kubectl
+  shell: >
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+- name: Copy kubectl to bin
+  shell: >
+    cp kubectl /bin ; chmod 775 /bin/kubectl
+
+######################################################################
+## Create user workshop
+######################################################################
+
+- name: Create user workshop
+  shell: >
+    sudo useradd -b /home/workshop -d /home/workshop -g 1001 -m -p $(perl -e 'print crypt($ARGV[0], "password")' 'workshop') -s /bin/bash workshop
+
+####################################################################
+## Set the Path for the user workshop
+####################################################################
+
+- name: Set the Path for the user workshop
+  shell: >
+    echo "export PATH=\$PATH:/home/workshop/workshop/bin" | sudo tee -a /home/workshop/.bashrc
+
+####################################################################
+## Install helm
+####################################################################
+
+- name: Download helm
+  shell: >
+    cd /home/admin ; curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3  ; chmod 700 /home/admin/get_helm.sh
+
+- name: Install helm
+  shell: >
+    sudo /home/admin/get_helm.sh
