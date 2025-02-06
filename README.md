@@ -65,3 +65,16 @@ Deploy and configure the software in the vm:
 ```
 tpaexec deploy .
 ```
+
+Prepare the workshop environment on the provisioned vm, run the script:
+```
+./remote_shell.sh
+```
+
+Connect to the vm:
+- obtain the public ip address of the vm in the file ssh_comfig
+- run in the browser the url: https://<vm public ip>
+- connect with the user **workshop** and password **workshop**
+
+## Run the demo
+Follow the steps from the pdf file below:
