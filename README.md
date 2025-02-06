@@ -72,7 +72,7 @@ Prepare the workshop environment on the provisioned vm, run the script:
 ```
 
 Connect to the vm:
-- obtain the public ip address of the vm in the file ssh_comfig
+- obtain the public ip address of the vm from the file ssh_comfig
 - run in the browser the url: https://<vm public ip>
 - connect with the user **workshop** and password **workshop**
 
