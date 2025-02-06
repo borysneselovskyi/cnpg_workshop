@@ -80,3 +80,27 @@ Connect to the vm:
 Follow the steps from the pdf file below:
 
 [CNPG_ Workshop_Hands-on.pdf](https://github.com/borysneselovskyi/cnpg_workshop/blob/main/CNPG_%20Workshop_Hands-on.pdf)
+
+## Some helpful scripts:
+1. aws_sg_ssh_rule_change_ip.sh - if the public ip address of your laptop is changed, you need to change it in the AWS securoty group - otherwise you will be not able to connect to your vm in AWS. You can change the ip in the securits group by running this script.
+Set the security group id and security group rule id for the ssh connect in the script:
+```
+SEC_GROUP_ID='your group id'
+SEC_GROUP_RULE_ID='your ssh rule id'
+```
+
+2. aws_sg_add_rules_trainer.sh - add the new security rules in AWS security group for your public ip address. Will add security rules for the ssh/prometheus/gtafana/MinIO access
+Set the security group id in the script:
+```
+SEC_GROUP_ID='your group id'
+```
+
+3. aws_sg_add_rules_users.sh - add the new security rules in AWS security group for a public ip address of workshop users. Will add security rules for the ssh/prometheus/gtafana/MinIO access
+- Set the security group id in the script:
+```
+SEC_GROUP_ID='your group id'
+```
+- execute the script with the public ip from user as argument:
+```
+./aws_sg_add_rules_users.sh <ip address of workshop user>
+```
