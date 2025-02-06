@@ -89,13 +89,13 @@ SEC_GROUP_ID='your group id'
 SEC_GROUP_RULE_ID='your ssh rule id'
 ```
 
-2. aws_sg_add_rules_trainer.sh - add the new security rules in AWS security group for your public ip address. Will add security rules for the ssh/prometheus/gtafana/MinIO access
+2. aws_sg_add_rules_trainer.sh - add the new security rules in AWS security group for your public ip address. Will add security rules for the ssh/prometheus/grafana/MinIO access
 Set the security group id in the script:
 ```
 SEC_GROUP_ID='your group id'
 ```
 
-3. aws_sg_add_rules_users.sh - add the new security rules in AWS security group for a public ip address of workshop users. Will add security rules for the ssh/prometheus/gtafana/MinIO access
+3. aws_sg_add_rules_users.sh - add the new security rules in AWS security group for a public ip address of workshop users. Will add security rules for the ssh/prometheus/grafana/MinIO access
 - Set the security group id in the script:
 ```
 SEC_GROUP_ID='your group id'
