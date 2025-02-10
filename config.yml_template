@@ -59,7 +59,6 @@ cluster_vars:
   use_volatile_subscriptions: true
   packages:
     common:
-      - jq
       - patch
       - git
       - docker.io
