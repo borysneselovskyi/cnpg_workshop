@@ -3,7 +3,7 @@
 
 By following the steps described below, it is possible to provision a virtual machine in AWS that is fully prepared to perform the hands-on in a Kubernetes workshop. The environment is provisioned using the tpaexec tool. 
 Provisioning is tested using tpaexec 23.35.0. 
-The hands-on is based on sources from Sergio Romero's Github repository:
+The hands-on is based on sources from Sergio Romera's Github repository:
 https://github.com/sergioenterprisedb/cnp-demo
 
 What will be installed:
