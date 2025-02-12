@@ -63,7 +63,6 @@ cluster_vars:
       - patch
       - git
       - docker.io
-      - jq
       - shellinabox
 
 locations:
