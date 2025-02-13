@@ -36,6 +36,7 @@ git clone git@github.com:borysneselovskyi/cnpg_workshop.git
 Change directory to cnpg_workshop
 ```
 cd /tpa/k8s_workhop/cnpg_workshop
+chmod -R 755 *
 ```
 
 Create the configuration file config.yml. This step will add the public ip address of the machine to enable the security rules for inbound data traffic between the machine and AWS:
