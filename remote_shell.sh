@@ -1,8 +1,6 @@
 #!/bin/bash
 
-#export working_dir="/git/k8s_workshop/debian_env"
-export working_dir=`pwd`
-
+working_dir="."
 export servers=`awk '/vm/ {print $2}' ${working_dir}/ssh_config`
 
 for server in $servers

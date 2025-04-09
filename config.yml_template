@@ -2,28 +2,13 @@
 architecture: M1
 cluster_name: training
 cluster_tags:
-  Owner: training (Borys Neselovskyi)
+  Owner: training (SE Led)
 
 keyring_backend: legacy
 vault_name: df7de378-da1f-49f1-8e5a-cfb1702f2a35
 
 cluster_rules:
-- cidr_ip: #IP#/32
-  from_port: 22
-  proto: tcp
-  to_port: 22
-- cidr_ip: #IP#/32
-  from_port: 9001
-  proto: tcp
-  to_port: 9001
-- cidr_ip: #IP#/32
-  from_port: 9090
-  proto: tcp
-  to_port: 9090
-- cidr_ip: #IP#/32
-  from_port: 3000
-  proto: tcp
-  to_port: 3000
+# IP ingress will be added by the script 'generate_config_file.sh' above this line
 - cidr_ip: 10.33.249.128/16
   from_port: 0
   proto: tcp
