@@ -58,6 +58,16 @@ tpaexec relink .
 ```
 _**Make sure you can connect to AWS from this machine!!**_
 
+Run script to create the tpaexec config file:
+
+```
+./generate_config_file.sh [ 'own-ip'|'netskope' ]  #default is 'own-ip'
+```
+if your experience is that you just need *your* IP in the config, then no args are needed, the script defaults to 'own-ip'. 
+
+If you are on an Netskope VPN, you need to run the generate script with 'netskope'.
+
+
 Run provisioning of the vm:
 ```
 tpaexec provisioning .
