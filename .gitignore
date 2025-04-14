@@ -1,3 +1,4 @@
+config.yml
 deploy.yml
 commands/status.yml
 commands/switchover.sh
