@@ -3,10 +3,24 @@
 CONFIG_FILE=config.yml
 CONFIG_TEMPLATE=config.yml_template
 TMP_FILE="/tmp/content-$$"
+AWS_IP_CHECK=https://checkip.amazonaws.com
+
+show_help(){
+	cat <<EOF
+$0 [netskope|own_ip]
+
+Generate config.yml for tpaexec to use.
+
+netskope:
+	Will use the EDB ingress IP-addresses and generate rules for all of them
+own_ip (default):
+	Will use your local IP-address (picked up from $AWS_IP_CHECK)
+EOF
+}
 
 get_ip(){
 	# Get IP Address from Amazon service
-	curl --silent https://checkip.amazonaws.com
+	curl --silent $AWS_IP_CHECK
 }
 
 generate_rules_for_ip() {
@@ -78,6 +92,10 @@ case $action in
 	netskope)
 		# Use Netskope IPs (EDB VPN egress adressess)
 		IPS=("162.10.0.0/17" "163.116.128.0/17" "31.186.239.0/24" "8.39.144.0/24" "8.36.116.0/24")
+		;;
+	*)
+		show_help
+		exit 0
 		;;
 esac
 
