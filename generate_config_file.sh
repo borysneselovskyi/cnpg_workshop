@@ -13,6 +13,9 @@ generate_rules_for_ip() {
 	# Output ingress cluster_rules for tpaexec for all needed ports
   local ip=$1
   cat <<EOF
+	########
+	######## Rules for ${ip}
+	########
 - cidr_ip: ${ip}
   from_port: 22
   proto: tcp

@@ -1,0 +1,5 @@
+deploy.yml
+commands/status.yml
+commands/switchover.sh
+commands/switchover.yml
+commands/upgrade.yml
